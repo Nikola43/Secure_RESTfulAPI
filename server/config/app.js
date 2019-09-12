@@ -14,10 +14,10 @@ module.exports = function () {
         server.set('env', config.env);
         server.set('port', config.port);
         server.set('hostname', config.hostname);
-        
+
         // add middleware to parse the json
         server.use(bodyParser.json());
-        server.use(expressValidator())
+        server.use(expressValidator());
         server.use(bodyParser.urlencoded({
             extended: false
         }));
@@ -25,7 +25,7 @@ module.exports = function () {
         //connect the database
         mongoose.connect(
             db.database,
-            { 
+            {
                 useNewUrlParser: true,
                 useCreateIndex: true
             }
@@ -35,7 +35,7 @@ module.exports = function () {
         routes.init(server);
     };
 
-    
+
     start = () => {
         let hostname = server.get('hostname'),
             port = server.get('port');

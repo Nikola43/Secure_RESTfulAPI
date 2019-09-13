@@ -1,9 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
-const expressValidator = require('express-validator')
+const Sequelize = require('sequelize');
+const expressValidator = require('express-validator');
 
 module.exports = function () {
+
+
     let server = express(),
         create,
         start;
@@ -22,14 +24,14 @@ module.exports = function () {
             extended: false
         }));
 
-        //connect the database
-        mongoose.connect(
-            db.database,
-            {
-                useNewUrlParser: true,
-                useCreateIndex: true
-            }
-        );
+        // init mysql connection
+        db.sequelize.authenticate()
+            .then(() => {
+                console.log('Conectado')
+            })
+            .catch(err => {
+                console.log('No se conecto')
+            });
 
         // Set up routes
         routes.init(server);

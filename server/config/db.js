@@ -1,3 +1,8 @@
+const Sequelize = require('sequelize');
+
 module.exports = {
-    'database': 'mongodb://127.0.0.1:27017/restAPI'
-  };
+    sequelize: new Sequelize('test_node', 'root', '', {
+        host: 'localhost',
+        dialect: 'mysql',
+    })
+};

@@ -1,37 +1,18 @@
-let mongoose = require('mongoose');
-let Schema = mongoose.Schema;
+var User = require('./neo4j/user');
 
-var User = new Schema(
-  {
-    invited_by: {
-      type: String,
-      required: [true, 'invited_by is required'],
-      lowercase: true
-    },
-    name: {
-      type: String,
-      required: [true, 'name is required'],
-      lowercase: true
-    },
-    email: {
-      type: String,
-      required: [true, 'email is required'],
-      unique: true,
-      lowercase: true
-    },
-    password: {
-      type: String,
-      required: [true, 'password is required']
-    },
-    invited_list: {
-      type: Array,
-      required: false,
-      lowercase: true
-    }
-  },
-  {
-    timestamps: true
-  }
-);
+var create = function (session, company) {
+    let query = 'CREATE (c:User{id: {id}, companyName: {companyName}, createdDate: {createdDate}, updatedDate: {updatedDate}}) RETURN c';
 
-module.exports = mongoose.model('User', User);
+    let writexResultPromise = session.writeTransaction(function (transaction) {
+        // used transaction will be committed automatically, no need for explicit commit/rollback
+        let result = transaction.run(query, {
+            id: company.id,
+            companyName: company.companyName,
+            createdDate: company.createdDate,
+            updatedDate: company.updatedDate
+        });
+        return result
+    });
+
+    return writexResultPromise.then(_returnBySingleId).catch(_handlePayloadValidation)
+};
